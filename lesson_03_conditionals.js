@@ -81,11 +81,30 @@ if (isLoggedIn) {
 
 // TODO: Write your code below this line
 
-// 1. const score = ...
+// 1
+const score = 72;
 
-// 2. if / else if / else ladder to print grade
+// 2
+if (score>=90){
+    console.log('Grade A');
+} else if (score>=80){
+    console.log('Grade B');
+} else if (score>=70){
+    console.log('Grade C');
+}else{
+    console.log('Grade F');
+}
 
-// 3. const passing = score >= 70; use strict equality to log pass status
+//3
+const passing = score >=70
+if(passing === true){
+    console.log('Passed: True');
+}else {
+    console.log('Passed: false')
+}
 
-// 4. Bonus: demonstrate strict vs loose equality with a string version
+//4
+console.log('"72" == score:', score == '72');
+console.log('"72" === score:', score === '72');
+
 

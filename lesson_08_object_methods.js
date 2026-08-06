@@ -73,10 +73,37 @@ for (const [key, value] of Object.entries(movie)) {
 
 // TODO: Write your code below this line
 
-// 1.
-// 2.
-// 3.
-// 4.
-// 5.
-// 6.
-// 7.
+// 1. Declare the library object
+const library = {
+  title: 'JavaScript in Practice',
+  author: 'Sam',
+  categories: ['programming', 'javascript', 'reference'],
+  rating: 4.3,
+  details: {
+    publisher: 'Code School',
+    year: 2026
+  }
+};
+
+// 2. Log book title and publisher
+console.log('Title:', library.title);
+console.log('Publisher:', library.details.publisher);
+
+// 3. Add getInfo method
+library.getInfo = function() {
+  return `${this.title} by ${this.author} (${this.details.year})`;
+};
+
+// 4. Call getInfo and log the result
+console.log(library.getInfo());
+
+// 5. Update rating to 4.5
+library.rating = 4.5;
+
+// 6. Log property names using Object.keys
+console.log('Keys:', Object.keys(library));
+
+// 7. Log property names and values using for...in
+for (const key in library) {
+  console.log(`${key}:`, library[key]);
+}

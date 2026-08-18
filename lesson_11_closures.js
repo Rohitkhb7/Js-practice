@@ -136,3 +136,81 @@ console.log(calculator.add(5).multiply(2).subtract(3).getResult());  // 7
 */
 
 // TODO: Write your code below this line
+// 1. Bank Account Factory (Closure for private balance)
+function createBankAccount(initialBalance = 0) {
+  let balance = initialBalance;
+
+  return {
+    deposit(amount) {
+      if (amount > 0) {
+        balance += amount;
+      }
+      return balance;
+    },
+    withdraw(amount) {
+      if (amount > 0 && amount <= balance) {
+        balance -= amount;
+      } else {
+        console.warn("Insufficient funds or invalid amount.");
+      }
+      return balance;
+    },
+    getBalance() {
+      return balance;
+    }
+  };
+}
+
+// 2. Test createBankAccount
+const myAccount = createBankAccount(1000);
+myAccount.deposit(500);
+myAccount.withdraw(200);
+console.log("Final Balance:", myAccount.getBalance()); // 1300
+
+
+// 3. Multiplier Factory (Closure for multiplier)
+function createMultiplier(multiplier) {
+  return function (num) {
+    return num * multiplier;
+  };
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+const quintuple = createMultiplier(5);
+
+// 4. Test Multipliers
+console.log("10 * 2 =", double(10));     // 20
+console.log("10 * 3 =", triple(10));     // 30
+console.log("10 * 5 =", quintuple(10));  // 50
+
+
+// 5. Bonus: Logger Factory (Closure for private logs array)
+function createLogger() {
+  let logs = [];
+
+  return {
+    add(message) {
+      logs.push({
+        message,
+        timestamp: new Date().toISOString()
+      });
+    },
+    getLogs() {
+      // Returns a shallow copy to prevent external mutation
+      return [...logs];
+    },
+    clear() {
+      logs = [];
+    }
+  };
+}
+
+// Testing the Logger
+const appLogger = createLogger();
+appLogger.add("User logged in");
+appLogger.add("Payment processed");
+console.log("Logs:", appLogger.getLogs());
+
+appLogger.clear();
+console.log("Logs after clearing:", appLogger.getLogs()); // []

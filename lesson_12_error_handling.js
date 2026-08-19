@@ -173,3 +173,113 @@ try {
 */
 
 // TODO: Write your code below this line
+
+// 4. Custom Error Class
+class EmailError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "EmailError";
+  }
+}
+
+// 1. validateEmail using custom EmailError
+function validateEmail(email) {
+  if (typeof email !== "string" || email.trim() === "") {
+    throw new EmailError("Email cannot be empty.");
+  }
+
+  const atIndex = email.indexOf("@");
+  if (atIndex === -1) {
+    throw new EmailError("Email must contain an '@' symbol.");
+  }
+
+  const dotIndexAfterAt = email.indexOf(".", atIndex);
+  if (dotIndexAfterAt === -1) {
+    throw new EmailError("Email must contain a '.' after the '@' symbol.");
+  }
+
+  return true;
+}
+
+// 2. safeEmailValidator with try...catch
+function safeEmailValidator(email) {
+  try {
+    return validateEmail(email);
+  } catch (error) {
+    console.error(`[Validation Failed for "${email}"]:`, error.message);
+    return false;
+  }
+}
+
+// 3. Testing validateEmail and safeEmailValidator
+const testEmails = [
+  "user@example.com", // Valid
+  "userexample.com",  // No @
+  "user@example",     // No dot after @
+  ""                  // Empty
+];
+
+console.log("=== Testing validateEmail directly (with try/catch) ===");
+testEmails.forEach((email) => {
+  try {
+    const result = validateEmail(email);
+    console.log(`"${email}" -> Valid: ${result}`);
+  } catch (err) {
+    console.log(`"${email}" -> Caught ${err.name}: ${err.message}`);
+  }
+});
+
+console.log("\n=== Testing safeEmailValidator ===");
+testEmails.forEach((email) => {
+  const isValid = safeEmailValidator(email);
+  console.log(`"${email}" -> is valid:`, isValid);
+});
+
+// 5. retryOperation Function
+function retryOperation(fn, maxRetries) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Attempt ${attempt} of ${maxRetries}...`);
+      return fn(); // Returns the result if successful
+    } catch (error) {
+      console.warn(`Attempt ${attempt} failed: ${error.message}`);
+      lastError = error;
+    }
+  }
+
+  throw new Error(`Operation failed after ${maxRetries} retries. Last error: ${lastError?.message}`);
+}
+
+// Testing retryOperation
+console.log("\n=== Testing retryOperation ===");
+
+// Example 1: Operation that succeeds on attempt 3
+let counter = 0;
+const flakyTask = () => {
+  counter++;
+  if (counter < 3) {
+    throw new Error("Temporary network glitch");
+  }
+  return "Data successfully fetched!";
+};
+
+try {
+  const result = retryOperation(flakyTask, 4);
+  console.log("Result:", result);
+} catch (err) {
+  console.error(err.message);
+}
+
+// Example 2: Operation that always fails
+console.log("\n--- Always-failing task ---");
+const alwaysFails = () => {
+  throw new Error("Permanent server error 500");
+};
+
+try {
+  retryOperation(alwaysFails, 3);
+} catch (err) {
+  console.error("Final outcome:", err.message);
+}
